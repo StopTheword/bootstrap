@@ -3,17 +3,16 @@ $(function () {
 
   QUnit.module('Util')
 
-  QUnit.test('Util.jQuery should find window.jQuery if window.$ is not available', function (assert) {
+  QUnit.test('Util should work on noConflict mode', function (assert) {
     assert.expect(1)
-    delete window.$
-    assert.strictEqual(Util.jQuery, window.jQuery)
-    window.$ = Util.jQuery
-  })
+    jQuery.noConflict() // eslint-disable-line func-call-spacing
 
-  QUnit.test('Util.jQuery should find window.$ if window.jQuery is not available', function (assert) {
-    assert.expect(1)
-    delete window.jQuery
-    assert.strictEqual(Util.jQuery, window.$)
-    window.jQuery = Util.jQuery
+    (function ($) { // eslint-disable-line no-unexpected-multiline
+      var $el = $('<div data-target="body"></div>').appendTo($('#qunit-fixture'))
+      assert.strictEqual(Util.getSelectorFromElement($el[0]), 'body')
+    }(jQuery))
+
+    // restore $
+    window.$ = jQuery
   })
 })
